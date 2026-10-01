@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./docker
+    image: cargopulse/app
+    container_name: cargopulse_app
+    restart: unless-stopped
+    working_dir: /var/www
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www
+
+  postgres:
+    image: postgres:15
+    container_name: cargopulse_postgres
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: cargopulse_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:

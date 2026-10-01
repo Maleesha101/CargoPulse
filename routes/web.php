@@ -19,3 +19,9 @@ Route::get('/shipments/search', [App\Http\Controllers\ShipmentController::class,
 
 Route::get('/shipments', [App\Http\Controllers\ShipmentController::class, 'index'])
     ->name('shipments.index');
+
+Route::post('/reports/filter', [App\Http\Controllers\ReportController::class, 'storeFilter'])
+    ->name('reports.filter.store');
+
+Route::get('/reports/generate', [App\Http\Controllers\ReportController::class, 'generate'])
+    ->name('reports.generate');

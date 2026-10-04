@@ -6,16 +6,20 @@ use App\Http\Controllers\Ops\ReportController as OpsReportController;
 use App\Http\Controllers\ShipmentController;
 
 /*
- |--------------------------------------------------------------------------
- | Web Routes
- |--------------------------------------------------------------------------
- |
- | Here is where you can register web routes for your application. These
- | routes are loaded by the ServiceProvider within a group which
- | contains the "web" middleware group. Now go build something amazing!
- */
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the ServiceProvider within a group which
+| contains the "web" middleware group. Now go build something amazing!
+*/
 
 // Public routes
+Route::get('/', function () {
+    return view('welcome');
+})->name('home');
+
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.attempt');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -39,8 +43,3 @@ Route::prefix('/ops')->group(function () {
     Route::post('/reports', [OpsReportController::class, 'storeFilter'])->name('ops.reports.store');
     Route::get('/reports/generate', [OpsReportController::class, 'generate'])->name('ops.reports.generate');
 });
-
-// Root redirect
-Route::get('/', function () {
-    return redirect('/login');
-})->name('home');

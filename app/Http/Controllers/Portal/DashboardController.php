@@ -26,12 +26,11 @@ class DashboardController extends Controller
     {
         $user = Session::get('user');
 
-        $recentShipments = Shipment::where('customer_name', 'like', '%' . 'Customer' . '%')
-            ->orWhere('customer_name', 'like', '%' . $user['name'] . '%')
+        $recentShipments = Shipment::where('customer_name', 'like', '%' . $user['name'] . '%')
             ->limit(5)
             ->get();
 
-        \App\Models\AuditLog::create([
+        AuditLog::create([
             'user_id' => $user['id'],
             'action' => 'portal_dashboard_view',
             'resource' => 'dashboard',
@@ -43,18 +42,44 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function track()
+    public function track(Request $request)
     {
-        return view('portal.track_shipment');
+        $shipment = null;
+        $trackingNumber = $request->input('tracking_number');
+
+        if ($trackingNumber) {
+            $shipment = Shipment::where('tracking_number', $trackingNumber)->first();
+
+            $user = Session::get('user');
+            if ($user) {
+                AuditLog::create([
+                    'user_id' => $user['id'],
+                    'action' => 'shipment_track',
+                    'resource' => 'shipments',
+                    'metadata' => ['tracking_number' => $trackingNumber],
+                ]);
+            }
+        }
+
+        return view('portal.track_shipment', [
+            'shipment' => $shipment,
+        ]);
     }
 
     public function history()
     {
         $user = Session::get('user');
-        $shipments = Shipment::where('customer_name', 'like', '%' . 'Customer' . '%')
-            ->orWhere('customer_name', 'like', '%' . $user['name'] . '%')
+
+        $shipments = Shipment::where('customer_name', 'like', '%' . $user['name'] . '%')
             ->orderBy('created_at', 'desc')
             ->get();
+
+        AuditLog::create([
+            'user_id' => $user['id'],
+            'action' => 'shipment_history',
+            'resource' => 'shipments',
+            'metadata' => [],
+        ]);
 
         return view('portal.shipment_history', [
             'shipments' => $shipments,
@@ -64,5 +89,10 @@ class DashboardController extends Controller
     public function searchForm()
     {
         return view('portal.shipment_search');
+    }
+
+    public function reports()
+    {
+        return view('portal.reports');
     }
 }

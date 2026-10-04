@@ -1,7 +1,6 @@
 <?php
 
-use Illuminate\Console\\Artisan;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Str;
 
-Artisan::macro('report:worker', function () {
-    // Commands are registered by the service provider
-});
+// Console routes are registered by the Kernel

@@ -1,8 +1,8 @@
-version: '3.8'
-
 services:
   app:
-    build: ./docker
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
     image: cargopulse/app
     container_name: cargopulse_app
     restart: unless-stopped
@@ -21,8 +21,10 @@ services:
     image: postgres:15
     container_name: cargopulse_postgres
     restart: unless-stopped
-    env_file:
-      - .env
+    environment:
+      POSTGRES_DB: cargopulse
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     volumes:

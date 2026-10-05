@@ -26,7 +26,7 @@ WORKDIR /var/www
 COPY composer.json ./
 
 # Install dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=ext-xml --ignore-platform-req=ext-dom --ignore-platform-req=ext-xmlwriter
+RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=ext-xml --ignore-platform-req=ext-dom --ignore-platform-req=ext-xmlwriter --no-scripts
 
 # Copy application code
 COPY . .

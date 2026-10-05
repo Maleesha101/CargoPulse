@@ -1,41 +1,44 @@
-FROM php:8.3-fpm-alpine
+FROM php:8.3-fpm
 
-# Install dependencies
-RUN apk add --no-cache \
-    $PHPIZE_DEPS \
-    iconv \
-    freetype \
-    libjpeg \
-    libpng \
-    libpq \
-    nginx \
-    supervisor \
-    curl \
-    wget \
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
     git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
     zip \
-    unzip
+    unzip \
+    libpq-dev \
+    && docker-php-ext-install pdo pdo_pgsql pgsql mbstring exif pcntl bcmath gd zip \
+    && pecl install redis \
+    && docker-php-ext-enable redis
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql bcmath
+# Install Composer
+ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Set working directory
 WORKDIR /var/www
 
-# Install Composer
-COMPOSER_ALLOW_SUPERUSER=1 curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Copy composer files
+COPY composer.json ./
 
-# Add user
-RUN addgroup -g 1000 appgroup && adduser -u 1000 -G appgroup -s /bin/sh -D appgroup
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=ext-xml --ignore-platform-req=ext-dom --ignore-platform-req=ext-xmlwriter
 
 # Copy application code
-COPY . /var/www
+COPY . .
 
-# Change ownership
-RUN chown -R appgroup:appgroup /var/www
+# Generate application key if not set
+RUN if [ -z "$APP_KEY" ]; then php -r "echo 'base64:' . base64_encode(random_bytes(32));" > /tmp/key.txt && sed -i "s|APP_KEY=.*|APP_KEY=$(cat /tmp/key.txt)|" .env; fi
+
+# Set permissions
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
+    && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 # Expose port
-EXPOSE 80
+EXPOSE 9000
 
-# Start PHP-FPM and Nginx
 CMD ["php-fpm"]

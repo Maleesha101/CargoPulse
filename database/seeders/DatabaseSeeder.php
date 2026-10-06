@@ -10,8 +10,8 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-
+        // PostgreSQL doesn't require disabling foreign key checks
+        // The seeders respect foreign key ordering via proper model relationships
         $this->call(UsersTableSeeder::class);
         $this->call(ShipmentsTableSeeder::class);
         $this->call(ShipmentEventsTableSeeder::class);
@@ -19,7 +19,5 @@ class DatabaseSeeder extends Seeder
         $this->call(ReportJobsTableSeeder::class);
         $this->call(InternalCredentialsTableSeeder::class);
         $this->call(SecurityChallengesTableSeeder::class);
-
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

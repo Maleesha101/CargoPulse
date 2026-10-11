@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\DatabaseSeeder;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Faker\Factory as Faker;
 
 class WarehouseNotesTableSeeder extends Seeder

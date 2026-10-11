@@ -15,8 +15,8 @@ CargoPulse is a logistics shipment management platform with two primary applicat
                            │
                            ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                         Nginx (Port 80)                         │
-│                    Reverse Proxy / Static Files                 │
+│                   Apache / PHP (Port 80)                        │
+│                  Laravel public/ document root                  │
 └──────────────────────────┬──────────────────────────────────────┘
                            │
                            ▼
@@ -118,13 +118,13 @@ users 1──< report_jobs >──1 shipments >──< shipment_events
 ## Network Isolation (Docker)
 
 ```
-frontend network: nginx ──► Laravel
+frontend network: Apache / PHP ──► Laravel
 backend network:  Laravel ──► PostgreSQL, Redis
                   Report Worker ──► PostgreSQL, Redis
 ```
 
-- PostgreSQL and Redis NOT exposed to host
-- Only port 8080 (nginx) exposed to localhost
+- PostgreSQL is not exposed to the host; Redis is exposed on port 6379 for local development.
+- The application is exposed on host port 8080 and served by Apache on container port 80.
 
 ## Vulnerability Locations
 

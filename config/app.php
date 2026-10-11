@@ -27,7 +27,7 @@ return [
         Illuminate\Foundation\Providers\ConsoleSupportServiceProvider::class,
         Illuminate\Foundation\Providers\ComposerServiceProvider::class,
         Illuminate\Foundation\Providers\FormRequestServiceProvider::class,
-        Illuminate\Foundation\Support\Providers\RouteServiceProvider::class,
+        App\Providers\RouteServiceProvider::class,
         Illuminate\Foundation\Support\Providers\AuthServiceProvider::class,
         Illuminate\Foundation\Support\Providers\EventServiceProvider::class,
         Illuminate\Auth\AuthServiceProvider::class,

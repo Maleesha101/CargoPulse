@@ -59,8 +59,8 @@ By completing this lab you will learn to:
                            │
                            ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                     Nginx (Port 8080)                           │
-│                    Reverse Proxy                                │
+│                  Apache / PHP (Port 8080)                       │
+│                    Laravel Application                          │
 └──────────────────────────┬──────────────────────────────────────┘
                            │
                            ▼
